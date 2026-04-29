@@ -53,7 +53,7 @@
         </span>
         <div class="menu-sub menu-sub-accordion">
           <div class="menu-item">
-            <a class="menu-link" href="authentication/extended/multi-steps-sign-up.html">
+            <a class="menu-link" href="#">
               <span class="menu-bullet">
                 <span class="bullet bullet-dot"></span>
               </span>
@@ -70,7 +70,7 @@
             </span>
             <div class="menu-sub menu-sub-accordion menu-active-bg">
               <div class="menu-item">
-                <a class="menu-link" href="authentication/layouts/corporate/sign-in.html">
+                <a class="menu-link" href="#">
                   <span class="menu-bullet">
                     <span class="bullet bullet-dot"></span>
                   </span>
@@ -80,7 +80,7 @@
             </div>
           </div>
           <div class="menu-item">
-            <a class="menu-link" href="authentication/extended/multi-steps-sign-up.html">
+            <a class="menu-link" href="#">
               <span class="menu-bullet">
                 <span class="bullet bullet-dot"></span>
               </span>
@@ -425,7 +425,7 @@
             </div>
           </div>
           <div class="menu-item">
-            <a class="menu-link" href="authentication/extended/multi-steps-sign-up.html">
+            <a class="menu-link" href="#">
               <span class="menu-bullet">
                 <span class="bullet bullet-dot"></span>
               </span>
@@ -759,7 +759,7 @@
             </div>
           </div>
           <div class="menu-item">
-            <a class="menu-link" href="authentication/extended/multi-steps-sign-up.html">
+            <a class="menu-link" href="#">
               <span class="menu-bullet">
                 <span class="bullet bullet-dot"></span>
               </span>
@@ -767,7 +767,7 @@
             </a>
           </div>
           <div class="menu-item">
-            <a class="menu-link" href="authentication/extended/multi-steps-sign-up.html">
+            <a class="menu-link" href="#">
               <span class="menu-bullet">
                 <span class="bullet bullet-dot"></span>
               </span>
@@ -849,7 +849,7 @@
         </span>
         <div class="menu-sub menu-sub-accordion">
           <div class="menu-item">
-            <a class="menu-link" href="authentication/extended/multi-steps-sign-up.html">
+            <a class="menu-link" href="#">
               <span class="menu-bullet">
                 <span class="bullet bullet-dot"></span>
               </span>
@@ -1050,7 +1050,7 @@
         </span>
         <div class="menu-sub menu-sub-accordion">
           <div class="menu-item">
-            <a class="menu-link" href="authentication/extended/multi-steps-sign-up.html">
+            <a class="menu-link" href="#">
               <span class="menu-bullet">
                 <span class="bullet bullet-dot"></span>
               </span>
