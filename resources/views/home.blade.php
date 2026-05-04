@@ -1,6 +1,9 @@
 @extends('layouts.dashboard.master')
 
 @section('content')
+  <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+    <h1><span id="kt_typedjs_banner" class="fs-1 fw-bold"></span></h1>
+  </div>
   <!--begin::Row-->
   <div class="row gy-5 gx-xl-10">
 
@@ -179,3 +182,19 @@
   </div>
   <!--end::Row-->
 @endsection
+@push('scripts')
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var typed = new Typed("#kt_typedjs_banner", {
+        strings: [
+          "Dashboard Penatausahaan.",
+          "jago banget nih.",
+          "slebewe.",
+        ],
+        typeSpeed: 45,
+        backSpeed: 15,
+        loop: true
+      });
+    });
+  </script>
+@endpush

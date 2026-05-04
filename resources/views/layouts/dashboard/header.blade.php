@@ -2,10 +2,10 @@
         <!--begin::Header logo-->
         <div class="app-header-logo d-flex align-items-center ps-lg-10 gap-4 gap-lg-6">
           <!--begin::Logo image-->
-          <a href="index.html">
-            <img alt="Logo" src="assets/media/logos/demo49-small.svg" class="h-20px d-sm-none d-inline theme-light-show" />
-            <img alt="Logo" src="assets/media/logos/demo49.svg" class="h-20px h-lg-25px theme-light-show d-none d-sm-inline" />
-            <img alt="Logo" src="assets/media/logos/demo49-dark.svg" class="h-20px h-lg-25px theme-dark-show" />
+          <a href="{{ route('home') }}">
+            <img alt="Logo" src="{{ asset('assets/media/logos/logo-spkad.png') }}" class="h-20px d-sm-none d-inline theme-light-show" />
+            <img alt="Logo" src="{{ asset('assets/media/logos/logo-spkad.png') }}" class="h-20px h-lg-65px theme-light-show d-none d-sm-inline" />
+            <img alt="Logo" src="#" class="h-20px h-lg-25px theme-dark-show" />
           </a>
           <!--end::Logo image-->
         </div>
