@@ -42,7 +42,8 @@
                       <!--end::Avatar-->
                       <!--begin::Username-->
                       <div class="d-flex flex-column">
-                        <div class="fw-bold d-flex align-items-center fs-5">nama user
+                        <div class="fw-bold d-flex align-items-center fs-5">
+                          {{ auth()->user()->name }}
                           <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">BUD</span>
                           {{-- <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">KBUD</span> --}}
                           {{-- <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">BP</span> --}}
@@ -61,7 +62,7 @@
                   <!--end::Menu separator-->
                   <!--begin::Menu item-->
                   <div class="menu-item px-5">
-                    <a href="account/overview.html" class="menu-link px-5">My Profile</a>
+                    <a href="#" class="menu-link px-5">My Profile</a>
                   </div>
                   <!--end::Menu item-->
                   <!--begin::Menu item-->
@@ -114,7 +115,13 @@
                   <!--end::Menu item-->
                   <!--begin::Menu item-->
                   <div class="menu-item px-5">
-                    <a href="authentication/layouts/corporate/sign-in.html" class="menu-link px-5">Sign Out</a>
+                    <a href="{{ route('logout') }}" class="menu-link px-5"
+                      onclick="event.preventDefault();
+                      document.getElementById('logout-form').submit();">
+                      LogOut</a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                      @csrf
+                    </form>
                   </div>
                   <!--end::Menu item-->
                 </div>
@@ -125,7 +132,7 @@
               <div class="app-navbar-item ms-1 ms-lg-3">
                 <a href="#" class="btn btn-flex btn-sm fw-bold btn-secondary px-2 px-md-5 py-3" data-bs-toggle="modal"
                   data-bs-target="#kt_modal_upgrade_plan">
-                  <span class="d-none d-sm-inline ps-1">tahun anggaran</span></a>
+                  <span class="d-none d-sm-inline ps-1">tahun anggaran : {{ session('tahun_anggaran') }}</span></a>
               </div>
               <div class="app-navbar-item ms-1 ms-lg-3 me-n4 d-flex d-lg-none">
                 <!--begin::Sidebar toggle-->
