@@ -12,6 +12,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
+    Route::get('/users/{user}/permissions', [UserController::class, 'editPermissions'])
+        ->name('users.permissions');
+    Route::put('/users/{user}/permissions', [UserController::class, 'updatePermissions'])
+        ->name('users.permissions.update');
 });
 
 require __DIR__.'/auth/auth.php';

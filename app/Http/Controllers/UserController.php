@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -102,5 +103,38 @@ class UserController extends Controller
 
         return redirect()->route('users.index')
             ->with('success', "User '{$user->name}' berhasil dihapus.");
+    }
+
+    public function editPermissions(User $user)
+    {
+        $this->middleware('role:superadmin');
+
+        $permissions = Permission::all()->groupBy(function ($item) {
+            return explode('.', $item->name)[0];
+        });
+
+        // Permission langsung (bukan dari role)
+        $directPermissions = $user->getDirectPermissions()->pluck('name')->toArray();
+
+        // Permission dari role (untuk info saja, tidak bisa diubah di sini)
+        $rolePermissions = $user->getPermissionsViaRoles()->pluck('name')->toArray();
+
+        return view('users.permissions', compact('user', 'permissions', 'directPermissions', 'rolePermissions'));
+    }
+
+    public function updatePermissions(Request $request, User $user)
+    {
+        $this->middleware('role:superadmin');
+
+        $request->validate([
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,name',
+        ]);
+
+        // Hanya sync direct permission, tidak ganggu permission dari role
+        $user->syncPermissions($request->permissions ?? []);
+
+        return redirect()->route('users.index')
+            ->with('success', "Permission user '{$user->name}' berhasil diupdate.");
     }
 }

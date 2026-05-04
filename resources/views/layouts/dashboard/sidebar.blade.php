@@ -22,6 +22,18 @@
         </div>
       </div>
 
+      {{-- role --}}
+      @role('superadmin')
+        <div class="menu-item">
+          <a class="menu-link" href="{{ route('roles.index') }}">
+            <span class="menu-icon">
+              <i class="ki-outline ki-calendar fs-2"></i>
+            </span>
+            <span class="menu-title">Role</span>
+          </a>
+        </div>
+      @endrole
+
       {{-- Jadwal --}}
       <div class="menu-item">
         <a class="menu-link" href="#">
@@ -101,14 +113,16 @@
       </div>
 
       {{-- Pengguna --}}
-      <div class="menu-item">
-        <a class="menu-link" href="#">
-          <span class="menu-icon">
-            <i class="ki-outline ki-profile-circle fs-2"></i>
-          </span>
-          <span class="menu-title">Pengguna</span>
-        </a>
-      </div>
+      @can('user.view')
+        <div class="menu-item">
+          <a class="menu-link" href="{{ route('users.index') }}">
+            <span class="menu-icon">
+              <i class="ki-outline ki-profile-circle fs-2"></i>
+            </span>
+            <span class="menu-title">Pengguna</span>
+          </a>
+        </div>
+      @endcan
 
       {{-- Pegawai --}}
       <div class="menu-item">

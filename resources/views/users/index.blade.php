@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard.master')
 
 @section('content')
   <div class="container-fluid">
@@ -62,6 +62,11 @@
                   @can('user.edit')
                     <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
                   @endcan
+
+                  @role('superadmin')
+                    <a href="{{ route('users.permissions', $user) }}" class="btn btn-info btn-sm">Permission</a>
+                  @endrole
+
                   @can('user.delete')
                     @if (!$user->hasRole('superadmin') && $user->id !== auth()->id())
                       <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline"

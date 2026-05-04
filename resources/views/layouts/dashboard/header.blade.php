@@ -44,12 +44,8 @@
                       <div class="d-flex flex-column">
                         <div class="fw-bold d-flex align-items-center fs-5">
                           {{ auth()->user()->name }}
-                          <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">BUD</span>
-                          {{-- <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">KBUD</span> --}}
-                          {{-- <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">BP</span> --}}
-                          {{-- <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">PA</span> --}}
-                          {{-- <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">KPA</span> --}}
-                          {{-- <span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">PPTK</span> --}}
+                          <span
+                            class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">{{ auth()->user()->getRoleNames()->first() ?? 'No Role' }}</span>
                         </div>
                         <a href="#" class="fw-semibold text-muted text-hover-primary fs-7">nama skpd</a>
                       </div>
