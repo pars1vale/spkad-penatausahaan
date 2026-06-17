@@ -14,9 +14,19 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('nip')->unique();
             $table->string('password');
+            $table->string('nik_user')->nullable();
+            $table->string('npwp_user')->unique()->nullable();
+            $table->date('lahir_user')->nullable();
+            $table->text('alamat')->nullable();
             $table->timestamp('last_login')->nullable();
+            $table->unsignedBigInteger('id_pang_gol')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('id_pang_gol')
+                ->references('id')
+                ->on('pangkat_golongan')
+                ->nullOnDelete();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

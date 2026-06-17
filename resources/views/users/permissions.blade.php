@@ -26,11 +26,11 @@
         <strong>Permission dari Role:</strong>
         Permission berikut sudah aktif otomatis karena role user ini.
         Centang di bawah adalah <u>tambahan permission langsung</u> di luar role.
-        <div class="mt-2">
+        {{-- <div class="mt-2">
           @foreach ($rolePermissions as $rp)
             <span class="badge bg-info text-dark me-1">{{ $rp }}</span>
           @endforeach
-        </div>
+        </div> --}}
       </div>
     @endif
 

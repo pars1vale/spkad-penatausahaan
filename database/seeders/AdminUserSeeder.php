@@ -12,7 +12,7 @@ class AdminUserSeeder extends Seeder
         $user = User::firstOrCreate(
             ['username' => 'superadmin'],
             [
-                'name' => 'godspkad',
+                'name' => 'superadmin',
                 'nip' => '000000000000000000',
                 'password' => bcrypt('12345678'),
             ]

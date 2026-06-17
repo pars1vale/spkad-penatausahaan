@@ -2,90 +2,64 @@
 
 @section('content')
   <div class="container-fluid">
-    <div class="row mb-3">
-      <div class="col">
-        <h4 class="fw-bold">Manajemen User</h4>
+
+    {{-- Header --}}
+    <div class="d-flex align-items-center justify-content-between mb-7">
+      <div>
+        <h1 class="page-heading fw-bold fs-3 text-gray-900 my-0">Manajemen User</h1>
+        <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+          <li class="breadcrumb-item text-muted">
+            <a href="{{ url('/') }}" class="text-muted text-hover-primary">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item"><span class="bullet bg-gray-500 w-5px h-2px"></span></li>
+          <li class="breadcrumb-item text-muted">Manajemen User</li>
+        </ul>
       </div>
-      <div class="col-auto">
-        @can('user.create')
-          <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-plus-lg"></i> Tambah User
-          </a>
-        @endcan
-      </div>
+      @can('user.create')
+        <a href="{{ route('users.create') }}" class="btn btn-primary hover-scale">
+          <i class="ki-duotone ki-plus fs-2"></i> Tambah User
+        </a>
+      @endcan
     </div>
 
-    @if (session('success'))
-      <div class="alert alert-success alert-dismissible fade show">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    @endif
+    @include('components.flash-messages')
 
-    @if (session('error'))
-      <div class="alert alert-danger alert-dismissible fade show">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    @endif
+    <div class="card card-bordered ">
+      <div class="card-body pt-6">
+        {{-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+             DATATABLE — konfigurasi 100% di sini, nol JS di view ini.
 
-    <div class="card shadow-sm">
-      <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th width="50">#</th>
-              <th>Nama</th>
-              <th>Username</th>
-              <th>NIP</th>
-              <th>Role</th>
-              <th>Login Terakhir</th>
-              <th width="150">Aksi</th>
+             Pada <table>:
+               data-ajax-url  = endpoint JSON controller
+               data-options   = opsi tambahan (JSON, opsional)
+
+             Pada <th>:
+               data-col        = nama key dari JSON server (wajib)
+               data-orderable  = "false" jika kolom tidak sortable
+               data-searchable = "false" jika kolom tidak searchable
+               data-width      = lebar kolom (opsional)
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ --}}
+
+        <table id="usersTable" class="table table align-middle table-bordered" data-ajax-url="{{ route('users.data') }}"
+          data-options='{"searchPlaceholder":"Cari user...","emptyText":"Belum ada data user"}'>
+          <thead>
+            <tr class="text-start text-gray-800 fw-bold fs-7 text-uppercase gs-0">
+              <th data-col="DT_RowIndex" data-orderable="false" data-searchable="false" data-width="50px">#</th>
+              <th data-col="name">Nama</th>
+              <th data-col="username">Username</th>
+              <th data-col="nip">NIP</th>
+              <th data-col="role" data-orderable="false" data-searchable="false">Role</th>
+              <th data-col="last_login" data-orderable="false" data-searchable="false">Login Terakhir</th>
+              <th data-col="action" data-orderable="false" data-searchable="false" data-width="130px">Aksi</th>
             </tr>
           </thead>
-          <tbody>
-            @forelse($users as $user)
-              <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user->username }}</td>
-                <td>{{ $user->nip }}</td>
-                <td>
-                  @foreach ($user->roles as $role)
-                    <span class="badge bg-primary">{{ $role->name }}</span>
-                  @endforeach
-                </td>
-                <td>
-                  {{ $user->last_login ? $user->last_login->format('d/m/Y H:i') : '-' }}
-                </td>
-                <td>
-                  @can('user.edit')
-                    <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm">Edit</a>
-                  @endcan
-
-                  @role('superadmin')
-                    <a href="{{ route('users.permissions', $user) }}" class="btn btn-info btn-sm">Permission</a>
-                  @endrole
-
-                  @can('user.delete')
-                    @if (!$user->hasRole('superadmin') && $user->id !== auth()->id())
-                      <form action="{{ route('users.destroy', $user) }}" method="POST" class="d-inline"
-                        onsubmit="return confirm('Hapus user {{ $user->name }}?')">
-                        @csrf @method('DELETE')
-                        <button class="btn btn-danger btn-sm">Hapus</button>
-                      </form>
-                    @endif
-                  @endcan
-                </td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="7" class="text-center text-muted py-4">Belum ada user.</td>
-              </tr>
-            @endforelse
-          </tbody>
+          <tbody class="text-gray-600 fw-semibold"></tbody>
         </table>
+
       </div>
     </div>
+
   </div>
+
+  @include('components.delete-modal')
 @endsection

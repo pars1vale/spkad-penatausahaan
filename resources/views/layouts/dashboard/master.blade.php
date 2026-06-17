@@ -10,10 +10,23 @@
   <meta property="og:site_name" content="SPKAD_Penatausahaan" />
   <link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+  {{-- HAPUS: CDN dataTables.bootstrap5.min.css — sudah ada di datatables.bundle.css KeenThemes --}}
   <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css" />
   <link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
   <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
   <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+  <style>
+    div.dt-length label {
+      display: inline-flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      gap: 8px !important;
+    }
+
+    div.dt-length select {
+      width: 75px !important;
+    }
+  </style>
 </head>
 
 <body id="kt_app_body" data-kt-app-header-fixed="true" data-kt-app-header-fixed-mobile="true" data-kt-app-sidebar-enabled="true"
@@ -44,18 +57,12 @@
       <div class="app-wrapper d-flex" id="kt_app_wrapper">
         @include('layouts.dashboard.sidebar')
         <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
-          {{-- @yield('content') --}}
           <div class="d-flex flex-column flex-column-fluid">
-            <!--begin::Content-->
             <div id="kt_app_content" class="app-content">
-              <!--begin::Content container-->
               <div id="kt_app_content_container" class="app-container container-fluid">
                 @yield('content')
-                <!--end::Row-->
               </div>
-              <!--end::Content container-->
             </div>
-            <!--end::Content-->
           </div>
           @include('layouts.dashboard.footer')
         </div>
@@ -70,20 +77,22 @@
   <script>
     var hostUrl = "assets/";
   </script>
+
+  {{--
+    URUTAN WAJIB:
+    1. plugins.bundle.js  → berisi jQuery
+    2. scripts.bundle.js  → berisi Bootstrap, KTMenu, dll
+    3. datatables.bundle.js → berisi DataTables + jQuery DataTables plugin
+    4. plugin lain
+    5. DataTableManager.js
+    6. @stack('scripts')
+
+    JANGAN load CDN jquery.dataTables / dataTables.bootstrap5 di sini —
+    sudah tercakup di datatables.bundle.js dan menyebabkan
+    "jQuery is not defined" karena CDN dieksekusi sebelum jQuery ada.
+  --}}
   <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
   <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
-  <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/radar." js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/map.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/geodata/continentsLow.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/geodata/usaLow.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZonesLow.js"></script>
-  <script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZoneAreasLow.js"></script>
-  <script src="{{ asset('assets/plugins/custom/typedjs/typedjs.bundle.js') }}"></script>
   <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
   <script src="{{ asset('assets/plugins/custom/typedjs/typedjs.bundle.js') }}"></script>
   <script src="{{ asset('assets/plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
@@ -92,6 +101,7 @@
   <script src="{{ asset('assets/js/custom/apps/chat/chat.js') }}"></script>
   <script src="{{ asset('assets/js/custom/utilities/modals/upgrade-plan.js') }}"></script>
   <script src="{{ asset('assets/js/custom/utilities/modals/users-search.js') }}"></script>
+  <script src="{{ asset('assets/js/core/DataTableManager.js') }}"></script>
   @stack('scripts')
 </body>
 

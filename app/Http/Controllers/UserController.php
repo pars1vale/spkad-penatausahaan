@@ -17,18 +17,131 @@ class UserController extends Controller
         $this->middleware('permission:user.delete')->only(['destroy']);
     }
 
+    // Render halaman index — view tidak butuh data apapun
     public function index()
     {
-        $users = User::with('roles')->latest()->get();
+        return view('users.index');
+    }
 
-        return view('users.index', compact('users'));
+    /**
+     * Endpoint AJAX untuk DataTableManager.js
+     * GET /users/data
+     *
+     * Mengembalikan format JSON standar DataTables:
+     * { draw, recordsTotal, recordsFiltered, data[] }
+     */
+    public function data(Request $request)
+    {
+        $draw = $request->integer('draw', 1);
+        $start = $request->integer('start', 0);
+        $length = $request->integer('length', 10);
+        $search = $request->input('search.value', '');
+
+        // ── Base query ───────────────────────────────────────────────
+        $query = User::with('roles');
+
+        // ── Search global ────────────────────────────────────────────
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('username', 'like', "%{$search}%")
+                    ->orWhere('nip', 'like', "%{$search}%");
+            });
+        }
+
+        // ── Sorting ──────────────────────────────────────────────────
+        $columnMap = [
+            1 => 'name',
+            2 => 'username',
+            3 => 'nip',
+        ];
+
+        $orderColIndex = $request->integer('order.0.column', 1);
+        $orderDir = $request->input('order.0.dir', 'asc');
+        $orderCol = $columnMap[$orderColIndex] ?? 'name';
+
+        $query->orderBy($orderCol, $orderDir);
+
+        // ── Count ────────────────────────────────────────────────────
+        $total = User::count();
+        $filtered = $query->count();
+
+        // ── Paginate ─────────────────────────────────────────────────
+        $users = $query->skip($start)->take($length)->get();
+
+        // ── Format data ──────────────────────────────────────────────
+        $data = $users->map(function ($user, $index) use ($start) {
+            // Tombol aksi
+            $action = $this->_buildAction($user);
+
+            // Badge role
+            $role = $user->roles->map(
+                fn ($r) => '<span class="badge badge-light-primary fw-bold">'.e($r->name).'</span>'
+            )->implode(' ') ?: '<span class="text-muted">-</span>';
+
+            return [
+                'DT_RowIndex' => $start + $index + 1,
+                'name' => '<span class="text-gray-800 fw-bold">'.e($user->name).'</span>',
+                'username' => '<span class="text-gray-600 fw-semibold font-monospace">'.e($user->username).'</span>',
+                'nip' => e($user->nip),
+                'role' => $role,
+                'last_login' => $user->last_login
+                    ? $user->last_login->format('d/m/Y H:i')
+                    : '<span class="text-muted">-</span>',
+                'action' => $action,
+            ];
+        });
+
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $total,
+            'recordsFiltered' => $filtered,
+            'data' => $data,
+        ]);
+    }
+
+    // ── Builder tombol aksi per baris ────────────────────────────────
+    private function _buildAction(User $user): string
+    {
+        $btn = '';
+
+        if (auth()->user()->can('user.edit')) {
+            $btn .= '<a href="'.route('users.edit', $user).'"
+                class="btn btn-icon btn-light-warning btn-sm me-1" title="Edit">
+                <i class="ki-duotone ki-pencil fs-4">
+                    <span class="path1"></span><span class="path2"></span>
+                </i></a>';
+        }
+
+        if (auth()->user()->hasRole('superadmin')) {
+            $btn .= '<a href="'.route('users.permissions', $user).'"
+                class="btn btn-icon btn-light-info btn-sm me-1" title="Permission">
+                <i class="ki-duotone ki-shield-tick fs-4">
+                    <span class="path1"></span><span class="path2"></span>
+                </i></a>';
+        }
+
+        if (
+            auth()->user()->can('user.delete')
+            && ! $user->hasRole('superadmin')
+            && $user->id !== auth()->id()
+        ) {
+            $btn .= '<button class="btn btn-icon btn-light-danger btn-sm btn-delete"
+                data-url="'.route('users.destroy', $user).'"
+                data-name="'.e($user->name).'" title="Hapus">
+                <i class="ki-duotone ki-trash fs-4">
+                    <span class="path1"></span><span class="path2"></span>
+                    <span class="path3"></span><span class="path4"></span>
+                    <span class="path5"></span>
+                </i></button>';
+        }
+
+        return '<div class="d-flex">'.$btn.'</div>';
     }
 
     public function create()
     {
-        $roles = Role::all();
-
-        return view('users.create', compact('roles'));
+        return view('users.create', ['roles' => Role::all()]);
     }
 
     public function store(Request $request)
@@ -45,9 +158,8 @@ class UserController extends Controller
             'name' => $request->name,
             'username' => $request->username,
             'nip' => $request->nip,
-            'password' => $request->password, // auto hashed via cast
+            'password' => $request->password,
         ]);
-
         $user->assignRole($request->role);
 
         return redirect()->route('users.index')
@@ -56,10 +168,11 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $roles = Role::all();
-        $userRole = $user->roles->first()?->name;
-
-        return view('users.edit', compact('user', 'roles', 'userRole'));
+        return view('users.edit', [
+            'user' => $user,
+            'roles' => Role::all(),
+            'userRole' => $user->roles->first()?->name,
+        ]);
     }
 
     public function update(Request $request, User $user)
@@ -93,8 +206,6 @@ class UserController extends Controller
         if ($user->hasRole('superadmin')) {
             return back()->with('error', 'User superadmin tidak dapat dihapus.');
         }
-
-        // Cegah hapus diri sendiri
         if ($user->id === auth()->id()) {
             return back()->with('error', 'Anda tidak dapat menghapus akun sendiri.');
         }
@@ -107,16 +218,8 @@ class UserController extends Controller
 
     public function editPermissions(User $user)
     {
-        $this->middleware('role:superadmin');
-
-        $permissions = Permission::all()->groupBy(function ($item) {
-            return explode('.', $item->name)[0];
-        });
-
-        // Permission langsung (bukan dari role)
+        $permissions = Permission::all()->groupBy(fn ($p) => explode('.', $p->name)[0]);
         $directPermissions = $user->getDirectPermissions()->pluck('name')->toArray();
-
-        // Permission dari role (untuk info saja, tidak bisa diubah di sini)
         $rolePermissions = $user->getPermissionsViaRoles()->pluck('name')->toArray();
 
         return view('users.permissions', compact('user', 'permissions', 'directPermissions', 'rolePermissions'));
@@ -124,14 +227,11 @@ class UserController extends Controller
 
     public function updatePermissions(Request $request, User $user)
     {
-        $this->middleware('role:superadmin');
-
         $request->validate([
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,name',
         ]);
 
-        // Hanya sync direct permission, tidak ganggu permission dari role
         $user->syncPermissions($request->permissions ?? []);
 
         return redirect()->route('users.index')

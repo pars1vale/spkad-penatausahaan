@@ -17,6 +17,11 @@ class User extends Authenticatable
         'nip',
         'password',
         'last_login',
+        'nik_user',
+        'npwp_user',
+        'lahir_user',
+        'alamat',
+        'id_pang_gol',
     ];
 
     protected $hidden = [
@@ -30,5 +35,10 @@ class User extends Authenticatable
             'last_login' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function panggol()
+    {
+        return $this->belongsTo(PangGol::class, 'id_pang_gol');
     }
 }

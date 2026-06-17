@@ -25,9 +25,9 @@
       {{-- role --}}
       @role('superadmin')
         <div class="menu-item">
-          <a class="menu-link" href="{{ route('roles.index') }}">
+          <a class="menu-link {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
             <span class="menu-icon">
-              <i class="ki-outline ki-calendar fs-2"></i>
+              <i class="ki-outline ki-security-user fs-2"></i>
             </span>
             <span class="menu-title">Role</span>
           </a>
@@ -46,7 +46,8 @@
 
       {{-- Kebijakan SPD --}}
       <div class="menu-item">
-        <a class="menu-link" href="#">
+        <a class="menu-link {{ request()->routeIs('kebijakan-spd.*') ? 'active' : '' }}" href="{{ route('kebijakan-spd.index') }}"
+          href="{{ route('kebijakan-spd.index') }}">
           <span class="menu-icon">
             <i class="ki-outline ki-document fs-2"></i>
           </span>
@@ -55,7 +56,8 @@
       </div>
 
       {{-- Rekening Bank --}}
-      <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+      <div data-kt-menu-trigger="click"
+        class="menu-item  {{ request()->routeIs('rekening-bank.*') || request()->is('rekening-bank*') ? 'show' : '' }} menu-accordion">
         <span class="menu-link">
           <span class="menu-icon">
             <i class="ki-outline ki-bank fs-2"></i>
@@ -65,14 +67,15 @@
         </span>
         <div class="menu-sub menu-sub-accordion">
           <div class="menu-item">
-            <a class="menu-link" href="#">
+            <a class="menu-link {{ request()->routeIs('rkud.*') ? 'active' : '' }}" href="{{ route('rkud.index') }}">
               <span class="menu-bullet">
                 <span class="bullet bullet-dot"></span>
               </span>
               <span class="menu-title">RKUD</span>
             </a>
           </div>
-          <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+          <div data-kt-menu-trigger="click"
+            class="menu-item {{ request()->routeIs('skpd.*') || request()->is('skpd*') ? 'show' : '' }} menu-accordion">
             <span class="menu-link">
               <span class="menu-bullet">
                 <span class="bullet bullet-dot"></span>
@@ -82,7 +85,7 @@
             </span>
             <div class="menu-sub menu-sub-accordion menu-active-bg">
               <div class="menu-item">
-                <a class="menu-link" href="#">
+                <a class="menu-link {{ request()->routeIs('skpd.*') ? 'active' : '' }}" href="{{ route('skpd.index') }}">
                   <span class="menu-bullet">
                     <span class="bullet bullet-dot"></span>
                   </span>
@@ -104,7 +107,8 @@
 
       {{-- Besaran UP --}}
       <div class="menu-item">
-        <a class="menu-link" href="#">
+        <a class="menu-link {{ request()->routeIs('besaran-up.*') ? 'active' : '' }}" href="{{ route('besaran-up.index') }}"
+          href="{{ route('besaran-up.index') }}">
           <span class="menu-icon">
             <i class="ki-outline ki-dollar fs-2"></i>
           </span>
@@ -115,7 +119,7 @@
       {{-- Pengguna --}}
       @can('user.view')
         <div class="menu-item">
-          <a class="menu-link" href="{{ route('users.index') }}">
+          <a class="menu-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
             <span class="menu-icon">
               <i class="ki-outline ki-profile-circle fs-2"></i>
             </span>
@@ -126,7 +130,7 @@
 
       {{-- Pegawai --}}
       <div class="menu-item">
-        <a class="menu-link" href="#">
+        <a class="menu-link " href="{{ route('pegawai.index') }}">
           <span class="menu-icon">
             <i class="ki-outline ki-people fs-2"></i>
           </span>
@@ -136,7 +140,7 @@
 
       {{-- Perangkat Daerah --}}
       <div class="menu-item">
-        <a class="menu-link" href="#">
+        <a class="menu-link {{ request()->routeIs('perangkat-daerah.*') ? 'active' : '' }}" href="{{ route('perangkat-daerah.index') }}">
           <span class="menu-icon">
             <i class="ki-outline ki-office-bag fs-2"></i>
           </span>
@@ -146,7 +150,7 @@
 
       {{-- Akun Penerimaan --}}
       <div class="menu-item">
-        <a class="menu-link" href="#">
+        <a class="menu-link {{ request()->routeIs('rek-penerimaan.*') ? 'active' : '' }}" href="{{ route('rek-penerimaan.index') }}">
           <span class="menu-icon">
             <i class="ki-outline ki-wallet fs-2"></i>
           </span>
@@ -156,7 +160,7 @@
 
       {{-- Blokir Rekening --}}
       <div class="menu-item">
-        <a class="menu-link" href="#">
+        <a class="menu-link {{ request()->routeIs('blokir-rekening.*') ? 'active' : '' }}" href="{{ route('blokir-rekening.index') }}">
           <span class="menu-icon">
             <i class="ki-outline ki-lock fs-2"></i>
           </span>
@@ -165,14 +169,14 @@
       </div>
 
       {{-- Sistem --}}
-      <div class="menu-item">
+      {{-- <div class="menu-item">
         <a class="menu-link" href="#">
           <span class="menu-icon">
             <i class="ki-outline ki-setting-2 fs-2"></i>
           </span>
           <span class="menu-title">Sistem</span>
         </a>
-      </div>
+      </div> --}}
 
       {{-- PENATAUSAHAAN --}}
       <div class="menu-item">

@@ -2,73 +2,46 @@
 
 @section('content')
   <div class="container-fluid">
-    <div class="row mb-3">
-      <div class="col">
-        <h4 class="fw-bold">Manajemen Role</h4>
+
+    {{-- Header --}}
+    <div class="d-flex align-items-center justify-content-between mb-7">
+      <div>
+        <h1 class="page-heading fw-bold fs-3 text-gray-900 my-0">Manajemen Role</h1>
+        <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+          <li class="breadcrumb-item text-muted">
+            <a href="{{ url('/') }}" class="text-muted text-hover-primary">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item"><span class="bullet bg-gray-500 w-5px h-2px"></span></li>
+          <li class="breadcrumb-item text-muted">Manajemen Role</li>
+        </ul>
       </div>
-      <div class="col-auto">
-        <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm">
-          <i class="bi bi-plus-lg"></i> Tambah Role
-        </a>
-      </div>
+      <a href="{{ route('roles.create') }}" class="btn btn-primary hover-scale">
+        <i class="ki-duotone ki-plus fs-2"></i> Tambah Role
+      </a>
     </div>
 
-    @if (session('success'))
-      <div class="alert alert-success alert-dismissible fade show">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    @endif
+    @include('components.flash-messages')
 
-    @if (session('error'))
-      <div class="alert alert-danger alert-dismissible fade show">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    @endif
-
-    <div class="card shadow-sm">
-      <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th width="50">#</th>
-              <th>Nama Role</th>
-              <th>Jumlah Permission</th>
-              <th>Jumlah User</th>
-              <th width="150">Aksi</th>
+    <div class="card card-bordered ">
+      <div class="card-body pt-6">
+        <table id="rolesTable" class="table align-middle table-bordered" data-ajax-url="{{ route('roles.data') }}"
+          data-options='{"searchPlaceholder":"Cari role...","emptyText":"Belum ada data role"}'>
+          <thead>
+            <tr class="text-start text-gray-800 fw-bold fs-7 text-uppercase gs-0">
+              <th data-col="DT_RowIndex" data-orderable="false" data-searchable="false" data-width="50px">#</th>
+              <th data-col="name">Nama Role</th>
+              <th data-col="permissions_count" data-orderable="false" data-searchable="false">Jumlah Permission</th>
+              <th data-col="users_count" data-orderable="false" data-searchable="false">Jumlah User</th>
+              <th data-col="action" data-orderable="false" data-searchable="false" data-width="120px">Aksi</th>
             </tr>
           </thead>
-          <tbody>
-            @forelse($roles as $role)
-              <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>
-                  <span class="badge bg-secondary">{{ $role->name }}</span>
-                </td>
-                <td>{{ $role->permissions_count }}</td>
-                <td>{{ $role->users()->count() }}</td>
-                <td>
-                  @if ($role->name !== 'superadmin')
-                    <a href="{{ route('roles.edit', $role) }}" class="btn btn-warning btn-sm">Edit</a>
-                    <form action="{{ route('roles.destroy', $role) }}" method="POST" class="d-inline"
-                      onsubmit="return confirm('Hapus role {{ $role->name }}?')">
-                      @csrf @method('DELETE')
-                      <button class="btn btn-danger btn-sm">Hapus</button>
-                    </form>
-                  @else
-                    <span class="text-muted small">Terlindungi</span>
-                  @endif
-                </td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="5" class="text-center text-muted py-4">Belum ada role.</td>
-              </tr>
-            @endforelse
-          </tbody>
+          <tbody class="text-gray-600 fw-semibold"></tbody>
         </table>
+
       </div>
     </div>
+
   </div>
+
+  @include('components.delete-modal')
 @endsection

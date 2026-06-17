@@ -12,6 +12,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolePermissionSeeder::class,
             AdminUserSeeder::class,
+            PangkatGolonganSeeder::class,
+            PeriodeSeeder::class,
+            JenisRkudSeeder::class,
+            PenerbitanSpdSeeder::class,
         ]);
     }
 }
