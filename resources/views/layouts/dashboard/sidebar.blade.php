@@ -186,7 +186,8 @@
       </div>
 
       {{-- Pengeluaran --}}
-      <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+      <div data-kt-menu-trigger="click"
+        class="menu-item menu-accordion  {{ request()->routeIs('pengeluaran.*') || request()->is('pengeluaran*') ? 'show' : '' }}">
         <span class="menu-link">
           <span class="menu-icon">
             <i class="ki-outline ki-exit-up fs-2"></i>
@@ -194,8 +195,17 @@
           <span class="menu-title">Pengeluaran</span>
           <span class="menu-arrow"></span>
         </span>
+
         <div class="menu-sub menu-sub-accordion">
-          <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+          <div class="menu-item">
+            <a class="menu-link" href="#">
+              <span class="menu-bullet">
+                <span class="bullet bullet-dot"></span>
+              </span>
+              <span class="menu-title">AKPD Belanja</span>
+            </a>
+          </div>
+          <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->is('pengeluaran/dpa*') ? 'show' : '' }}">
             <span class="menu-link">
               <span class="menu-bullet">
                 <span class="bullet bullet-dot"></span>
@@ -206,7 +216,7 @@
             <div class="menu-sub menu-sub-accordion menu-active-bg">
 
               {{-- LEVEL 2: Penerimaan (accordion) --}}
-              <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+              <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->is('pengeluaran/dpa/penerimaan*') ? 'show' : '' }}">
                 <span class="menu-link">
                   <span class="menu-bullet">
                     <span class="bullet bullet-dot"></span>
@@ -218,10 +228,8 @@
 
                   {{-- LEVEL 3: Leaf item (tanpa arrow, tanpa accordion) --}}
                   <div class="menu-item">
-                    <a class="menu-link" href="#">
-                      <span class="menu-bullet">
-                        <span class="bullet bullet-dot"></span>
-                      </span>
+                    <a class="menu-link {{ request()->routeIs('dpa-pendapatan.*') ? 'active' : '' }}" href="{{ route('dpa-pendapatan.index') }}">
+                      <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                       <span class="menu-title">Pendapatan</span>
                     </a>
                   </div>

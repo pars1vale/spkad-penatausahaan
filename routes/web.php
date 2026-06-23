@@ -55,6 +55,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('blokir-rekening/tree', [BlokirRekeningController::class, 'tree'])->name('blokir-rekening.tree');
     Route::post('blokir-rekening/update', [BlokirRekeningController::class, 'update'])->name('blokir-rekening.update');
     Route::get('blokir-rekening', [BlokirRekeningController::class, 'index'])->name('blokir-rekening.index');
+
+    require __DIR__.'/pengeluaran.php';
 });
 
 require __DIR__.'/auth/auth.php';

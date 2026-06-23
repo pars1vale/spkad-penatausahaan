@@ -60,6 +60,14 @@ class RolePermissionSeeder extends Seeder
             'blokir-rekening.view',
             'blokir-rekening.edit',
 
+            'dpa-pendapatan.view',
+            'dpa-pendapatan.create',
+            'dpa-pendapatan.edit',
+            'dpa-pendapatan.delete',
+
+            'dpa-pendapatan.detail.view',
+            'dpa-pendapatan.detail.edit',
+
         ];
 
         foreach ($permissions as $permission) {

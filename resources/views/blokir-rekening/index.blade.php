@@ -4,7 +4,7 @@
   <style>
     .blokir-branch[data-level]:not([data-level="0"]) {
       border-left: 2px solid #dee2e6;
-      margin-left: 2px;
+      margin-left: 15px;
     }
 
     .blokir-leaf {
@@ -407,7 +407,7 @@
         // border-left sebagai connector line — inline style agar tidak
         // bergantung pada @stack('styles') yang tidak ada di master layout
         const connectorStyle = lvl > 0 ?
-          'border-left: 2px solid #dee2e6; margin-left: 2px;' :
+          'border-left: 2px solid #dee2e6; margin-left: 15px;' :
           '';
 
         const $wrapper = $(`<div class="blokir-branch" data-level="${lvl}" style="${connectorStyle}"></div>`);

@@ -1,6 +1,24 @@
 "use strict";
+
 const DataTableManager = (() => {
     const _instances = {};
+    // ─── Toastr options ─────────────────────────────────────────────────
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toastr-top-right",
+        "preventDuplicates": false,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
 
     // ─── Entry point ───────────────────────────────────────────────────
     const init = () => {
@@ -19,11 +37,13 @@ const DataTableManager = (() => {
         const id = table.id;
 
         if (!id) {
+            toastr.warning("DataTableManager, <table> harus punya id.", table);
             console.warn("[DataTableManager] <table> harus punya id.", table);
             return;
         }
 
         if (_instances[id]) {
+            toastr.warning(`DataTableManager, #${id} sudah di-init. Gunakan switchTab() atau destroy() dulu.`);
             console.warn(`[DataTableManager] #${id} sudah di-init. Gunakan switchTab() atau destroy() dulu.`);
             return;
         }
@@ -32,6 +52,7 @@ const DataTableManager = (() => {
         const columns = _columnsFromThead(table);
 
         if (!columns.length) {
+            toastr.warning(`DataTableManager, tidak ada kolom valid pada #${id}.`);
             console.warn(`[DataTableManager] Tidak ada kolom valid pada #${id}.`);
             return;
         }
@@ -59,11 +80,6 @@ const DataTableManager = (() => {
 
             columns,
 
-            // ─── PENTING: dom string tetap dipakai (bukan layout object) ──
-            // karena DT v2 + Bootstrap 5 dengan dom string menghasilkan
-            // struktur row/col yang sudah kita ketahui dari DOM dump.
-            // _styleControls akan target elemen via id/class langsung,
-            // bukan via container wrapper.
             dom:
                 "<'row align-items-center mb-5'" +
                 "<'col-sm-12 col-md-6'l>" +
@@ -131,6 +147,7 @@ const DataTableManager = (() => {
     const switchTab = (tableId, tab) => {
         const tableEl = document.getElementById(tableId);
         if (!tableEl) {
+            toastr.warning(`DataTableManager, switchTab: #${tableId} tidak ditemukan.`);
             console.warn(`[DataTableManager] switchTab: #${tableId} tidak ditemukan.`);
             return;
         }
@@ -158,33 +175,19 @@ const DataTableManager = (() => {
     };
 
     // ─── Style kontrol ─────────────────────────────────────────────────
-    // DOM aktual DT v2 + dom string (dikonfirmasi dari dump):
-    //
-    //  .dt-container
-    //    div.row.align-items-center.mb-5
-    //      div.col-sm-12.col-md-6
-    //        [label]                          ← DT v1: label wrapping select
-    //          select#dt-length-0             ← select ada di sini
-    //      div.col-sm-12.col-md-6
-    //        input#dt-search-0
-    //
-    // Tidak ada .dt-length wrapper. Target langsung via id.
     const _styleControls = (tableId) => {
 
-        // ── Scope: .dt-container (DT v2) atau .dataTables_wrapper (DT v1) ──
         const tableEl = document.getElementById(tableId);
         if (!tableEl) return;
 
         const $container = $(tableEl).closest(".dt-container, .dataTables_wrapper");
         if (!$container.length) {
+            toastr.warning(`DataTableManager, _styleControls: container tidak ditemukan untuk #${tableId}.`);
             console.warn(`[DataTableManager] _styleControls: container tidak ditemukan untuk #${tableId}`);
             return;
         }
 
         // ── Length select ─────────────────────────────────────────────
-        // Target: select[id^="dt-length"] (DT v2) | .dataTables_length select (DT v1)
-        // Masalah: select ada di dalam <label> yang KeenThemes paksa flex-column.
-        // Solusi: detach select, hapus label, rebuild flat structure di col yang sama.
         const $lengthCol = $container.find("select[id^='dt-length']").closest(".col-sm-12, .dataTables_length");
 
         if ($lengthCol.length && !$lengthCol.find(".dt-length-wrap").length) {
@@ -196,11 +199,7 @@ const DataTableManager = (() => {
                     .css({ display: "inline-block", width: "75px" });
 
                 $select.detach();
-
-                // Bersihkan isi col (buang label KeenThemes yang bermasalah)
                 $lengthCol.empty();
-
-                // Inject flat structure — tidak pakai label sama sekali
                 $lengthCol.append(
                     `<div class="dt-length-wrap d-flex align-items-center gap-2">
                         <span class="text-gray-700 fw-semibold fs-7">Tampilkan</span>
@@ -213,10 +212,9 @@ const DataTableManager = (() => {
         }
 
         // ── Search input ──────────────────────────────────────────────
-        // Target: input[id^="dt-search"] (DT v2) | .dataTables_filter input (DT v1)
         $container.find("input[id^='dt-search'], .dataTables_filter input").each(function () {
             const $inp = $(this);
-            if ($inp.closest(".dt-search-wrap").length) return; // sudah di-style
+            if ($inp.closest(".dt-search-wrap").length) return;
 
             $inp.removeClass("form-control-sm");
 
@@ -236,7 +234,6 @@ const DataTableManager = (() => {
     };
 
     // ─── Style pagination ──────────────────────────────────────────────
-    // DT v2: .dt-paging .paginate_button | DT v1: .dataTables_paginate .paginate_button
     const _stylePagination = () => {
         $(".dt-paging .paginate_button, .dataTables_paginate .paginate_button")
             .addClass("btn btn-sm btn-light me-1 mb-1")
@@ -249,10 +246,7 @@ const DataTableManager = (() => {
     const _overrideSearch = (tableId) => {
         let timer;
         const ns = `spkad_search_${tableId}`;
-
         $(document).off(`.${ns}`);
-
-        // Scope ke container tabel ini agar tidak overlap antar tabel
         const tableEl = document.getElementById(tableId);
         const $container = $(tableEl).closest(".dt-container, .dataTables_wrapper");
 
@@ -284,6 +278,7 @@ const DataTableManager = (() => {
     const _onAjaxError = (xhr) => {
         if (xhr.status === 401) { window.location.reload(); return; }
         if (xhr.status === 403) { window.toastr?.error("Akses ditolak."); return; }
+        toastr.error(`Terjadi kesalahan saat memuat data. (HTTP ${xhr.status})`);
         console.error(`[DataTableManager] AJAX error ${xhr.status}:`, xhr.statusText);
     };
 
